@@ -1,3 +1,4 @@
+var versionname;
 var invco=[];
 var boxdata=[];
 var boxdatasub={};
@@ -1794,6 +1795,7 @@ var System=(function(){
 	var URL=java.net.URL;
 	var Uri=android.net.Uri;
 	var Intent=android.content.Intent;
+	var version_url=new URL("https://raw.githubusercontent.com/hiro0209/StorageBox-for-MCPE/hiro0209-patch-1/StorageBox%20version.txt").openStream();
 	return{
 		useBox:function(x,y,z,id,bi,side){
 			let xx=Math.floor(x);
@@ -2217,6 +2219,13 @@ var System=(function(){
 				writer.close();
 			}
 			font=android.graphics.Typeface.createFromFile(file);
+		},
+		loadVersion:function(){
+			let input=new InputStreamReader(version_url);
+			let reader=new BufferedReader(input);
+			let data=reader.readLine();
+			reader.close();
+			versionname=data;
 		}
 	}
 })();
@@ -2709,6 +2718,7 @@ var item=[
 ];
 
 try{
+System.loadVersion();
 System.guiImageManager();
 System.createFont();
 
