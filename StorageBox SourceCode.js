@@ -2415,6 +2415,21 @@ function procCmd(cmd){
 				if(cmd[2]=="ON") autocollection=true;
 				if(cmd[2]=="OFF") autocollection=false;
 				break;
+			case "update":
+				let update=UpdateManager.versionManager();
+				if(!update){
+					GUI.uiThread(function(){
+						let dialog=new android.app.AllertDialog.Builder(ctx);
+						dialog.setTitle("StorageBox update");
+						if(ModPE.getLanguage()=="ja_JP"){
+							dialog.setMessage("お使いのバージョンは最新版です。");
+						}else{
+							dialog.setMessage("This version is latest version.");
+						}
+						dialog.show();
+					});
+				}
+				break;
 		}
 	}
 }
