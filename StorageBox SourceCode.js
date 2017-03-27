@@ -1,4 +1,4 @@
-var versionname;
+var versionname="1.2.1";
 var invco=[];
 var boxdata=[];
 var boxdatasub={};
@@ -2174,29 +2174,6 @@ var System=(function(){
 				writer.close();
 				createGuiImages();
 				saveGuiImages();
-			}else{
-				let read=new FileReader(verfile);
-				let reader=new BufferedReader(read);
-				let data=reader.readLine();
-				reader.close();
-				if(data!=versionname){
-					nomedia.createNewFile();
-					verfile.createNewFile();
-					let stream=new FileOutputStream(verfile);
-					let writer=new OutputStreamWriter(stream);
-					writer.write(versionname);
-					writer.close();
-					createGuiImages();
-					saveGuiImages();
-				}else{
-					new java.lang.Thread(function(){
-						if(nomedia.exists()){
-							nomedia.delete();
-						}
-						loadGuiImages();
-						nomedia.createNewFile();
-					}).start();
-				}
 			}
 		},
 		getBlockLauncherVersionCode:function(){
