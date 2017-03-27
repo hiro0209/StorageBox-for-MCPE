@@ -2402,6 +2402,7 @@ function procCmd(cmd){
 				break;
 			case "update":
 				update_condition=true;
+				UpdateManager.saveUpdateManagerCondition();
 				let update=UpdateManager.versionManager();
 				if(!update){
 					GUI.uiThread(function(){
