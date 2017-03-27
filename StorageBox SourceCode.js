@@ -2401,7 +2401,7 @@ function procCmd(cmd){
 				if(cmd[2]=="OFF") autocollection=false;
 				break;
 			case "update":
-				update_condition=true;
+				update_condition="true";
 				UpdateManager.saveUpdateManagerCondition();
 				let update=UpdateManager.versionManager();
 				if(!update){
