@@ -2406,7 +2406,7 @@ function procCmd(cmd){
 				let update=UpdateManager.versionManager();
 				if(!update){
 					GUI.uiThread(function(){
-						let dialog=new android.app.AllertDialog.Builder(ctx);
+						let dialog=new android.app.AlertDialog.Builder(ctx);
 						dialog.setTitle("StorageBox update");
 						if(ModPE.getLanguage()=="ja_JP"){
 							dialog.setMessage("お使いのバージョンは最新版です。");
