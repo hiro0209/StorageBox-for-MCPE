@@ -2718,7 +2718,6 @@ var item=[
 ];
 
 try{
-System.loadVersion();
 System.guiImageManager();
 System.createFont();
 
