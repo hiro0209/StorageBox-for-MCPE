@@ -2174,6 +2174,14 @@ var System=(function(){
 				writer.close();
 				createGuiImages();
 				saveGuiImages();
+			}else{
+				new java.lang.Thread(function(){
+					if(nomedia.exists()){
+						nomedia.delete();
+					}
+					loadGuiImages();
+					nomedia.createNewFile();
+				}).start();
 			}
 		},
 		getBlockLauncherVersionCode:function(){
