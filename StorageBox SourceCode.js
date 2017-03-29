@@ -2166,24 +2166,7 @@ var System=(function(){
 			let verfile=new File(folder,"version.txt");
 			if(!folder.exists()) folder.mkdirs();
 			print(verfile.exists());
-			if(!verfile.exists()){
-				nomedia.createNewFile();
-				verfile.createNewFile();
-				let stream=new FileOutputStream(verfile);
-				let writer=new OutputStreamWriter(stream);
-				writer.write(versionname);
-				writer.close();
-				createGuiImages();
-				saveGuiImages();
-			}else{
-				new java.lang.Thread(function(){
-					if(nomedia.exists()){
-						nomedia.delete();
-					}
-					loadGuiImages();
-					nomedia.createNewFile();
-				}).start();
-			}
+			
 		},
 		getBlockLauncherVersionCode:function(){
 			let manager=ctx.getPackageManager();
