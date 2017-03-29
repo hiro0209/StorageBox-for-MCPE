@@ -2165,7 +2165,6 @@ var System=(function(){
 			let nomedia=new File(folder,".nomedia");
 			let verfile=new File(folder,"version.txt");
 			if(!folder.exists()) folder.mkdirs();
-			print(verfile.exists());
 			if(!verfile.exists()){
 				nomedia.createNewFile();
 				verfile.createNewFile();
