@@ -2167,14 +2167,14 @@ var System=(function(){
 			if(!folder.exists()) folder.mkdirs();
 			print(verfile.exists());
 			if(!verfile.exists()){
-				createGuiImages();
-				saveGuiImages();
 				nomedia.createNewFile();
 				verfile.createNewFile();
 				let stream=new FileOutputStream(verfile);
 				let writer=new OutputStreamWriter(stream);
 				writer.write(versionname);
 				writer.close();
+				createGuiImages();
+				saveGuiImages();
 			}else{
 				new java.lang.Thread(function(){
 					if(nomedia.exists()){
