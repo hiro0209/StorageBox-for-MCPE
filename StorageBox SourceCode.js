@@ -1677,7 +1677,7 @@ var GUI=(function(){
 			return bitmap;
 		},
 		setBackground:function(view,drawable){
-			if(Build.VERSION.SDK_INT<15){
+			if(Build.VERSION.SDK_INT>15){
 				view.setBackground(drawable);
 			}else{
 				view.setBackgroundDrawable(drawable);
