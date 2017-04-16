@@ -57,23 +57,24 @@ var GUI=(function(){
 	var ArrayAdapter=android.widget.ArrayAdapter;
 	var ArrayList=java.util.ArrayList;
 	var Collections=java.util.Collections;
+	var Intent=android.content.Intent;
+	var Uri=android.net.Uri;
 	var setting_screen=[];
 	var backs=[];
 	var allbuttons=[];
 	var items=[];
 	return{
-		uiThread:function(content){
-			ctx.runOnUiThread(
-				new java.lang.Runnable({
-					run:function(){
-						try{
-							content();
-						}catch(e){
-							saveError(e);
-						}
+		uiThread:function(content,id){
+			ctx.runOnUiThread(new java.lang.Runnable({
+				run:function(){
+					try{
+						content();
+					}catch(e){
+						sendError(id,e);
+						saveError(id+"\n"+e);
 					}
-				})
-			);
+				}
+			}));
 		},
 		popUpWindow:function(obj,view,info){
 			gui=new PopupWindow(view,info[0],info[1]);
@@ -484,33 +485,34 @@ var GUI=(function(){
 				all.setOnClickListener(
 					new OnClickListener(){
 						onClick:function(){
-						try{
-							Level.playSoundEnt(getPlayerEnt(),"random.click",500,1);
-							let info=System.loadBoxInfo(Player.getItemCustomName(Player.getSelectedSlotId()));
-							let setedid=Number(info[0]);
-							let seteddata=Number(info[1]);
-							let fileamo=Number(info[2]);
-							let adds=System.addItemInventory(setedid,fileamo,seteddata);
-							if(adds==0){
-								System.saveBoxInfo(Player.getItemCustomName(Player.getSelectedSlotId()),0,0,0);
-								GUI.setBackground(setblock,android.graphics.drawable.BitmapDrawable(android.graphics.Bitmap.createScaledBitmap(android.graphics.BitmapFactory.decodeStream(ModPE.openInputStreamFromTexturePack("images/gui/inventory.png")),Width(180),Height(180),true)));
-								setblock.setImageBitmap(null);
-							}else{
-								System.saveBoxInfo(Player.getItemCustomName(Player.getSelectedSlotId()),setedid,seteddata,adds);
-							}
-							if(ModPE.getLanguage()=="ja_JP"){
-								amountview.setText("個数: "+adds);
-							}else{
-								amountview.setText("Amount: "+adds);
-							}
-							for(let i=0;i<items.length;i++){
-								inv.removeView(items[i]);
-							}
-							items.length=0;
-							setInventory();
+							try{
+								Level.playSoundEnt(getPlayerEnt(),"random.click",500,1);
+								let info=System.loadBoxInfo(Player.getItemCustomName(Player.getSelectedSlotId()));
+								let setedid=Number(info[0]);
+								let seteddata=Number(info[1]);
+								let fileamo=Number(info[2]);
+								let adds=System.addItemInventory(setedid,fileamo,seteddata);
+								if(adds==0){
+									System.saveBoxInfo(Player.getItemCustomName(Player.getSelectedSlotId()),0,0,0);
+									GUI.setBackground(setblock,android.graphics.drawable.BitmapDrawable(android.graphics.Bitmap.createScaledBitmap(android.graphics.BitmapFactory.decodeStream(ModPE.openInputStreamFromTexturePack("images/gui/inventory.png")),Width(180),Height(180),true)));
+									setblock.setImageBitmap(null);
+								}else{
+									System.saveBoxInfo(Player.getItemCustomName(Player.getSelectedSlotId()),setedid,seteddata,adds);
+								}
+								if(ModPE.getLanguage()=="ja_JP"){
+									amountview.setText("個数: "+adds);
+								}else{
+									amountview.setText("Amount: "+adds);
+								}
+								for(let i=0;i<items.length;i++){
+									inv.removeView(items[i]);
+								}
+								items.length=0;
+								setInventory();
 							}catch(e){
-							saveError(e);
-						}
+								sendError("One_All_Click",e);
+								saveError(e);
+							}
 						}
 					}
 				);
@@ -632,11 +634,15 @@ var GUI=(function(){
 							trueitemimage=true;
 						}catch(e){}
 					}else if(isBlock(inventory_slot)){
-						GUI.setBackground(item,eval("slot"+inventory_slot+"_"+inventory_slot_data));
-						trueitemimage=true;
+						try{
+							GUI.setBackground(item,eval("slot"+inventory_slot+"_"+inventory_slot_data));
+							trueitemimage=true;
+						}catch(e){}
 					}else if(isFood(inventory_slot)){
-						GUI.setBackground(item,eval("slot"+inventory_slot+"_"));
-						trueitemimage=true;
+						try{
+							GUI.setBackground(item,eval("slot"+inventory_slot+"_"));
+							trueitemimage=true;
+						}catch(e){}
 					}else{
 						GUI.setBackground(item,invslotimage);
 					}
@@ -868,7 +874,7 @@ var GUI=(function(){
 				let gui=new PopupWindow(mainlayout,point.x,point.y);
 				gui.showAtLocation(ctx.getWindow().getDecorView(),Gravity.CENTER|Gravity.TOP,0,0);
 				setting_screen.push(posikeeps,gui);
-			});
+			},"One_Box_Gui");
 		},
 		addSettingScreen2:function(){
 			GUI.uiThread(function(){
@@ -1188,11 +1194,15 @@ var GUI=(function(){
 							trueitemimage=true;
 						}catch(e){}
 					}else if(isBlock(inventory_slot)){
-						GUI.setBackground(item,eval("slot"+inventory_slot+"_"+inventory_slot_data));
-						trueitemimage=true;
+						try{
+							GUI.setBackground(item,eval("slot"+inventory_slot+"_"+inventory_slot_data));
+							trueitemimage=true;
+						}catch(e){}
 					}else if(isFood(inventory_slot)){
-						GUI.setBackground(item,eval("slot"+inventory_slot+"_"));
-						trueitemimage=true;
+						try{
+							GUI.setBackground(item,eval("slot"+inventory_slot+"_"));
+							trueitemimage=true;
+						}catch(e){}
 					}else{
 						GUI.setBackground(item,invslotimage);
 					}
@@ -1562,7 +1572,7 @@ var GUI=(function(){
 				let gui=new PopupWindow(mainlayout,point.x,point.y);
 				gui.showAtLocation(ctx.getWindow().getDecorView(),Gravity.CENTER|Gravity.TOP,0,0);
 				setting_screen.push(posikeeps,gui);
-			});
+			},"Two_Box_Gui");
 		},
 		backSettingScreen:function(){
 			GUI.uiThread(function(){
@@ -1574,7 +1584,7 @@ var GUI=(function(){
 					viewscreen=false;
 					if(autocollection) flag=true;
 				}
-			});
+			},"Box_Gui_Dismiss");
 		},
 		showBoxNameSetting:function(){
 			let File=java.io.File;
@@ -1653,7 +1663,7 @@ var GUI=(function(){
 					dialog.setTitle(Item.getName(Player.getInventorySlot(Player.getSelectedSlotId()),Player.getInventorySlotData(Player.getSelectedSlotId()),false));
 				}
 				dialog.show();
-			});
+			},"Box_Name_Setting");
 		},
 		convertDpIntoPixel:function(dp){
 			let metrics=ctx.getResources().getDisplayMetrics();
@@ -1704,11 +1714,11 @@ var GUI=(function(){
 					button.setOnClickListener(
 						new OnClickListener(){
 							onClick:function(){
-							try{
-								GUI.showDeleteBoxDataDialog(button.getText());
+								try{
+									GUI.showDeleteBoxDataDialog(button.getText());
 								}catch(e){
-								saveError(e);
-								
+									sendError("Show_Data_List",e);
+									saveError(e);
 								}
 							}
 						}
@@ -1717,7 +1727,7 @@ var GUI=(function(){
 				}
 				dialog.setContentView(scroll);
 				dialog.show();
-			});
+			},"Show_BoxData_List");
 		},
 		showDeleteBoxDataDialog:function(item){
 			GUI.uiThread(function(){
@@ -1750,7 +1760,7 @@ var GUI=(function(){
 					});
 				}
 				dialog.show();
-			});
+			},"Show_BoxData_Delete");
 		},
 		showCompleteDeleteDataDialog:function(){
 			GUI.uiThread(function(){
@@ -1765,7 +1775,7 @@ var GUI=(function(){
 					dialog.setMessage("Delete data is completed.");
 				}
 				dialog.show();
-			});
+			},"Show_Complert_BoxData_Delete");
 		},
 		showCancelDeleteDataDialog:function(){
 			GUI.uiThread(function(){
@@ -1780,7 +1790,7 @@ var GUI=(function(){
 					dialog.setMessage("Delete data is canceled.");
 				}
 				dialog.show();
-			});
+			},"Show_Cancel_BoxData_Delete");
 		}
 	}
 })();
@@ -2357,6 +2367,49 @@ function saveError(error){
 	writer.close();
 }
 
+function sendError(id,error){
+	ctx.runOnUiThread(new java.lang.Runnable({
+		run:function(){
+			let dialog=new AlertDialog(ctx);
+			dialog.setTitle("StorageBox Error");
+			if(ModPE.getLanguage()=="ja_JP"){
+				dialog.setMessage("エラーが発生しました。開発者にフィードバックを送信しますか？\n送信すると次回更新までに修正される可能性が高まります。");
+				dialog.setPositiveButton("はい",new android.content.DialogInterface.OnClickListener(){
+					onClick:function(){
+						let intent=new Intent();
+						intent.setAction(Intent.ACTION_SENDTO);
+						intent.setType("text/plain");
+						intent.setData(Uri.parse("mailto:budouraamen0209@gmail.com"));
+						intent.putExtra(Intent.EXTRA_SUBJECT,"StorageBox Error");
+						intent.putExtra(Intent.EXTRA_TEXT,"エラーが発生しました。\n\nエラーの内容\n"+id+"\n"+error+"\n\nこのまま送信してください。");
+						ctx.startActivity(intent);
+					}
+				});
+				dialog.setNegativeButton("いいえ",new android.content.DialogInterface.OnClickListener(){
+					onClick:function(){}
+				});
+			}else{
+				dialog.setMessage("An error occurred. Send feedback to developers?\nSending feedback increases the chances of being fixed by next update.");
+				dialog.setPositiveButton("Yes",new android.content.DialogInterface.OnClickListener(){
+					onClick:function(){
+						let intent=new Intent();
+						intent.setAction(Intent.ACTION_SENDTO);
+						intent.setType("text/plain");
+						intent.setData(Uri.parse("mailto:budouraamen0209@gmail.com"));
+						intent.putExtra(Intent.EXTRA_SUBJECT,"StorageBox Error");
+						intent.putExtra(Intent.EXTRA_TEXT,"エラーが発生しました。\n\nエラーの内容\n"+id+"\n"+error+"\n\nPlease send as it is.");
+						ctx.startActivity(intent);
+					}
+				});
+				dialog.setNegativeButton("No",new android.content.DialogInterface.OnClickListener(){
+					onClick:function(){}
+				});
+			}
+			dialog.show();
+		}
+	}));
+}
+
 function saveBitmapPng(name,image){
 	let file=new java.io.File(sdcard,"games/com.mojang/StorageBox/"+name+".png");
 	let stream=new java.io.FileOutputStream(file);
@@ -2413,7 +2466,7 @@ function procCmd(cmd){
 							dialog.setMessage("This version is latest version.");
 						}
 						dialog.show();
-					});
+					},"UpdateManager_Info");
 				}
 				break;
 		}
